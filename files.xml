@@ -1,0 +1,16 @@
+<module>
+  <project path="ucp_winProcHandler/ucp_winProcHandler/ucp_winProcHandler.vcxproj"/>
+  
+  <files> <!-- first without could be equal to build="Release"-->
+    <file src="ucp_winProcHandler/$(Configuration)/winProcHandler.dll" />
+    <file src="*.lua" target="." />
+    <file src="*.yml" target="." />
+  </files>
+  
+  <files build="Debug">
+    <file src="ucp_winProcHandler/$(Configuration)/winProcHandler.dll" />
+    <file src="ucp_winProcHandler/$(Configuration)/winProcHandler.pdb" />
+    <file src="*.lua" target="." />
+    <file src="*.yml" target="." />
+  </files>
+</module>
