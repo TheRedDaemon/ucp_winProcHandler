@@ -5,7 +5,7 @@ The module allows to register a modified WindowProc function via other C++ code,
 
 ### Usage
 
-To make using the module easier, the header [winProcHelper.h](ucp_winProcHandler/) can be copied into your project. It provides convenience features.  
+To make using the module easier, the header [winProcHelper.h](ucp_winProcHandler/ucp_winProcHandler/winProcHandler.h) can be copied into your project. It provides convenience features.  
 It is used by calling the function *initModuleFunctions()*. It tries to receive the provided functions and returns *true* if successful.
 The provided functions are the following:
 
