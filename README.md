@@ -5,8 +5,8 @@ The module allows to register a modified WindowProc function via other C++ code,
 
 ### Usage
 
-To make using the module easier, the header [winProcHelper.h](ucp_winProcHandler/ucp_winProcHandler/winProcHandler.h) can be copied into your project. It provides convenience features.  
-It is used by calling the function *initModuleFunctions()*. It tries to receive the provided functions and returns *true* if successful.
+At the time of creation, C functions would need to be parsed through lua in the form of numbers. To make using the module easier, the header [winProcHelper.h](ucp_winProcHandler/ucp_winProcHandler/winProcHandler.h) can be copied into your project.  
+It is used by calling the function *initModuleFunctions(lua_state * )* during the lua require call of the dll. It tries to receive the provided functions and returns *true* if successful. For this to work, winProcHandler needs to be a dependency.
 The provided functions are the following:
 
 * *GetMainProc*  

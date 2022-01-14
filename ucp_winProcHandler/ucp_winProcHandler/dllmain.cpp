@@ -13,7 +13,7 @@ static std::map<int, WinProcHeader::FuncCallNextProc> procMap{};
 
 /* helper */
 
-static __declspec(naked) LRESULT __stdcall CallRealProcFunc(UINT, HWND, UINT, WPARAM, LPARAM)
+static __declspec(naked) LRESULT __stdcall CallRealProcFunc(int, HWND, UINT, WPARAM, LPARAM)
 {
   __asm
   {
@@ -45,7 +45,7 @@ static WinProcHeader::FuncCallNextProc __stdcall GetProcFuncAddress(int &indexIn
 
 /* Export functions, CallNextProc */
 
-extern "C" __declspec(dllexport, naked) LRESULT __stdcall CallNextProc(UINT, HWND, UINT, WPARAM, LPARAM)
+extern "C" __declspec(dllexport, naked) LRESULT __stdcall CallNextProc(int, HWND, UINT, WPARAM, LPARAM)
 {
   __asm
   {
@@ -116,17 +116,18 @@ extern "C" __declspec(dllexport) int __cdecl luaopen_winProcHandler(lua_State * 
   // simple replace
   lua_pushinteger(L, (DWORD)WindowProc);
   lua_setfield(L, -2, "funcAddress_WindowProc");
+ 
+  // add functions
+  lua_newtable(L); // push function table
+  lua_pushinteger(L, (DWORD)GetMainProc);
+  lua_setfield(L, -2, WinProcHeader::NAME_GET_MAIN_PROC);
+  lua_pushinteger(L, (DWORD)CallNextProc);
+  lua_setfield(L, -2, WinProcHeader::NAME_CALL_NEXT_PROC);
+  lua_pushinteger(L, (DWORD)RegisterProc);
+  lua_setfield(L, -2, WinProcHeader::NAME_REGISTER_PROC);
 
-  // test
-  /*
-  realWinProc = WindowProcTest;
-  if (WinProcHeader::initModuleFunctions())
-  {
-    WinProcHeader::RegisterProc(nullptr, -10);
-    WinProcHeader::RegisterProc(WinProcHeader::CallNextProc, 0);
-    WindowProc(0, 0, 0, 0);
-  }
-  */
+  // add table
+  lua_setfield(L, -2, "funcPtr");
 
   return 1;
 }

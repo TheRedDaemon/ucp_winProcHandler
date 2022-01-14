@@ -16,20 +16,23 @@ exports.enable = function(self, moduleConfig, globalConfig)
   windowCreationProcAddAddr = windowCreationProcAddAddr + 4 -- move pointer to actual address
 
   --[[ load module ]]--
-
-  local winProcHandler = require("winProcHandler.dll") -- loads the dll in memory and runs luaopen_winProcHandler
-  self.winProcHandler = winProcHandler
+  
+  local requireTable = require("winProcHandler.dll") -- loads the dll in memory and runs luaopen_winProcHandler
+  
+  for name, addr in pairs(requireTable.funcPtr) do
+    self[name] = addr
+  end
 
   -- address of crusaders windowProcCallback needed, fill address of given variable with callback address
   core.writeCode(
-    winProcHandler.address_FillWithWindowProcCallback,
+    requireTable.address_FillWithWindowProcCallback,
     {procAddress}  -- extreme 1.41.1-E address: 0x004B2C50
   )
   
   -- replaces the function ptr during the window creation with the one from the winProcHandler
   core.writeCode(
     windowCreationProcAddAddr, -- normal 1.41 address: 0x00467aaa
-    {winProcHandler.funcAddress_WindowProc}
+    {requireTable.funcAddress_WindowProc}
   )
 
 end
