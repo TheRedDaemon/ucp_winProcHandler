@@ -4,13 +4,13 @@ exports.enable = function(self, moduleConfig, globalConfig)
 
   local procAddress = core.AOBScan("83 EC 48 A1 ? ? ? ? 33 C4 89 44 ? ? 8B 44 ? ? 8B 4C ? ? 53 55 56 57", 0x400000)
   if procAddress == nil then
-    print("'winProcHandler' was unable to find the main WindowProc address.")
+    log(ERROR, "'winProcHandler' was unable to find the main WindowProc address.")
     error("'winProcHandler' can not be initialized.")
   end
   
   local windowCreationProcAddAddr = core.AOBScan("c7 44 24 14 ? ? ? 00 89 7c 24 10", 0x400000)
   if windowCreationProcAddAddr == nil then
-    print("'winProcHandler' was unable to find the point where the main WindowProc is used to create the window.")
+    log(ERROR, "'winProcHandler' was unable to find the point where the main WindowProc is used to create the window.")
     error("'winProcHandler' can not be initialized.")
   end
   windowCreationProcAddAddr = windowCreationProcAddAddr + 4 -- move pointer to actual address
