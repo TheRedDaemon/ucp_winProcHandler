@@ -109,18 +109,6 @@ extern "C" __declspec(dllexport) int __cdecl luaopen_winProcHandler(lua_State * 
   // simple replace
   lua_pushinteger(L, (DWORD)WindowProc);
   lua_setfield(L, -2, "funcAddress_WindowProc");
- 
-  // add functions
-  lua_newtable(L); // push function table
-  lua_pushinteger(L, (DWORD)GetMainProc);
-  lua_setfield(L, -2, WinProcHeader::NAME_GET_MAIN_PROC);
-  lua_pushinteger(L, (DWORD)CallNextProc);
-  lua_setfield(L, -2, WinProcHeader::NAME_CALL_NEXT_PROC);
-  lua_pushinteger(L, (DWORD)RegisterProc);
-  lua_setfield(L, -2, WinProcHeader::NAME_REGISTER_PROC);
-
-  // add table
-  lua_setfield(L, -2, "funcPtr");
 
   return 1;
 }

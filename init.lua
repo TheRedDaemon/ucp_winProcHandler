@@ -1,27 +1,33 @@
 local exports = {}
 
+local function getAddress(aob, errorMsg, modifierFunc)
+  local address = core.AOBScan(aob, 0x400000)
+  if address == nil then
+    log(ERROR, errorMsg)
+    error("'winProcHandler' can not be initialized.")
+  end
+  if modifierFunc == nil then
+    return address;
+  end
+  return modifierFunc(address)
+end
+
 exports.enable = function(self, moduleConfig, globalConfig)
 
-  local procAddress = core.AOBScan("83 EC 48 A1 ? ? ? ? 33 C4 89 44 ? ? 8B 44 ? ? 8B 4C ? ? 53 55 56 57", 0x400000)
-  if procAddress == nil then
-    log(ERROR, "'winProcHandler' was unable to find the main WindowProc address.")
-    error("'winProcHandler' can not be initialized.")
-  end
+  local procAddress = getAddress(
+    "83 EC 48 A1 ? ? ? ? 33 C4 89 44 ? ? 8B 44 ? ? 8B 4C ? ? 53 55 56 57",
+    "'winProcHandler' was unable to find the main WindowProc address."
+  )
   
-  local windowCreationProcAddAddr = core.AOBScan("c7 44 24 14 ? ? ? 00 89 7c 24 10", 0x400000)
-  if windowCreationProcAddAddr == nil then
-    log(ERROR, "'winProcHandler' was unable to find the point where the main WindowProc is used to create the window.")
-    error("'winProcHandler' can not be initialized.")
-  end
-  windowCreationProcAddAddr = windowCreationProcAddAddr + 4 -- move pointer to actual address
+  local windowCreationProcAddAddr = getAddress(
+    "c7 44 24 14 ? ? ? 00 89 7c 24 10",
+    "'winProcHandler' was unable to find the point where the main WindowProc is used to create the window.",
+    function(foundAddress) return foundAddress + 4 end -- move pointer to actual address
+  )
 
   --[[ load module ]]--
   
   local requireTable = require("winProcHandler.dll") -- loads the dll in memory and runs luaopen_winProcHandler
-  
-  for name, addr in pairs(requireTable.funcPtr) do
-    self[name] = addr
-  end
 
   -- address of crusaders windowProcCallback needed, fill address of given variable with callback address
   core.writeCode(
