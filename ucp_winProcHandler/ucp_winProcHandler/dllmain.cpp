@@ -73,13 +73,6 @@ static __declspec(naked) LRESULT CALLBACK WindowProc(HWND, UINT, WPARAM, LPARAM)
   }
 }
 
-/*
-static LRESULT CALLBACK WindowProcTest(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-  return 10;
-}
-*/
-
 
 /* Other export functions */
 
@@ -130,21 +123,4 @@ extern "C" __declspec(dllexport) int __cdecl luaopen_winProcHandler(lua_State * 
   lua_setfield(L, -2, "funcPtr");
 
   return 1;
-}
-
-// entry point
-BOOL APIENTRY DllMain(HMODULE,
-  DWORD  ul_reason_for_call,
-  LPVOID
-)
-{
-  switch (ul_reason_for_call)
-  {
-    case DLL_PROCESS_ATTACH:
-    case DLL_THREAD_ATTACH:
-    case DLL_THREAD_DETACH:
-    case DLL_PROCESS_DETACH:
-      break;
-  }
-  return TRUE;
 }
